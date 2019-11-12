@@ -1,0 +1,3 @@
+wine /root/.wine/drive_c/Python27/Scripts/pyinstaller.exe --onefile --noconsole reverse_shell.py
+cd dist/
+
