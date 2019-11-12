@@ -23,6 +23,8 @@ def shell():
         reliable_send(command)
         if command == 'q':
             break
+        elif command[:2] == "cd" and len(command) > 1:
+            continue
         else:
             result = reliable_recv()
             print(result)
