@@ -59,6 +59,8 @@ def shell():
     while True:
         command = reliable_recv()
         if command == 'q':
+            continue
+        if command == "exit":
             break
         elif command == "help":
             help_options = '''
