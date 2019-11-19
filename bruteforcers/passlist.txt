@@ -1,4 +1,7 @@
 holamundo
+123456
+root
+toor
 contrasenia
 password
 qwerty123
